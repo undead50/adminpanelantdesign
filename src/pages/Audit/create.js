@@ -14,7 +14,6 @@ function Create() {
     const [url, setUrl] = useState(
         BACKEND_URL + '/apims/branchList'
       );
-    alert('createpage')  
     // const { data, loading, error } = useFetch('http://192.168.254.54:54684/api/apims/branchList');
     const [options, setOptions] = useState([
         { value: 'option1', label: 'Option 1' },
@@ -49,6 +48,7 @@ function Create() {
     //   }, [branchDepartment]);
     
     const handleBranchDepartment=(e) =>{
+        console.log(e.target.value)
         if( e.target.value == "Branch"){
             const url = BACKEND_URL + '/apims/branchList'
             setUrl(url)

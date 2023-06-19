@@ -60,14 +60,11 @@ const AdminLayout = () => {
             </Button>
           </div>
         </Header>
-        <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb>
+        <Content style={{ margin: '16px' }}>
+        
           <div
             className="site-layout-background"
-            style={{ padding: 24, minHeight: 360 }}
+            style={{ padding: 16, minHeight: 360 }}
           >
             <Outlet/>
           </div>
