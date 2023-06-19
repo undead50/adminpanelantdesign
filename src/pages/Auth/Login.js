@@ -5,33 +5,35 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import './index.css';
 import Spinner from '../../components/Spinner';
 import { setUser } from '../../store';
-import {useSelector,useDispatch} from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
 import { postLoginData } from '../../store/slices/authSlice';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  alert('login');
+  const { data, loading, error } = useSelector((state) => state.auth);
 
-    const { data, loading, error } = useSelector((state) => state.auth);
-
-    const onFinish = (values) => {
+  const onFinish = (values) => {
     // Call the postData function from the custom hook
     const reqData = {
-      username:values.username,
-      password:values.password
-    }
-    dispatch(postLoginData(reqData))
-    alert(data)
-    console.log(data)
-    if (data.Code === "0"){
-        dispatch(setUser({
+      username: values.username,
+      password: values.password,
+    };
+    dispatch(postLoginData(reqData));
+    alert(data);
+    console.log(data);
+    if (data.Code === '0') {
+      dispatch(
+        setUser({
           userName: data.Data.userName,
-          solId:data.Data.solId,
-          email:data.Data.email,
-          departmentName:data.Data.departmentName,
-          token:data.Data.token
-      }))
+          solId: data.Data.solId,
+          email: data.Data.email,
+          departmentName: data.Data.departmentName,
+          token: data.Data.token,
+        })
+      );
       navigate('/');
     }
   };
@@ -78,7 +80,7 @@ const LoginPage = () => {
           </Button>
         </Form.Item>
         {loading && <Spinner />}
-        <Outlet/>
+        <Outlet />
       </Form>
     </div>
   );

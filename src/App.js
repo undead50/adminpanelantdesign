@@ -1,9 +1,7 @@
-import MyRoutes from "./routes";
+import MyRoutes from './routes';
 
 const App = () => {
-  return (
-    <MyRoutes/>
-  );
+  return <MyRoutes />;
 };
 
 export default App;

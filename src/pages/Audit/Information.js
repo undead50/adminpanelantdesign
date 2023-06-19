@@ -1,6 +1,6 @@
-
 function Information() {
-    return ( <>info</> );
+  alert('information loaded');
+  return <>infoo</>;
 }
 
 export default Information;
