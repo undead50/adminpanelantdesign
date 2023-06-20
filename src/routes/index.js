@@ -9,7 +9,6 @@ import AdminLayout from '../containers/AdminLayout';
 
 function MyRoutes() {
   return (
-    <React.StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path = "/login" element={<LoginPage/>}></Route>
@@ -21,7 +20,6 @@ function MyRoutes() {
         </Route>
       </Routes>
     </BrowserRouter>
-    </React.StrictMode>
   );
 }
 

@@ -48,13 +48,15 @@ export const useFetch = (url) => {
   const  {userInfo}  = useSelector((state) => state.user);
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const { data } = await axios.get(url,{headers: {
           'Authorization': `Bearer ${userInfo.token}`,
           'Content-Type': 'application/json',
         }});
-        alert('callapi'+url)
-        console.log(data);
+        // alert('callapi'+url)
+        console.log('URL:::'+url);
         setData(data);
         setLoading(false);
         setError(false)
