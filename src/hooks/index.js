@@ -1,9 +1,14 @@
 import { useState } from 'react';
-import axios from 'axios';
+import axios, { Axios } from 'axios';
 import { timeout } from '../config';
 import {notification} from 'antd'
 import { useEffect } from 'react';
 import {useSelector} from "react-redux";
+import { BACKEND_URL } from '../config';
+import { Outlet, useNavigate } from 'react-router-dom';
+
+
+axios.defaults.baseURL = BACKEND_URL;
 
 export const useNotification = () => {
   const callNotification = (description,type) =>{
@@ -17,6 +22,9 @@ export const useNotification = () => {
     }
   return { callNotification}  
 }
+
+const cache = {};
+
 
 export const useApiPost = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -41,34 +49,45 @@ export const useApiPost = () => {
   return { isLoading, error, data, postData };
 };
 
-export const useFetch = (url) => {
+ const useFetch = (url, useCache=false) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
   const  {userInfo}  = useSelector((state) => state.user);
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      setError(null);
+      if (useCache && cache[url]) {
+        console.log("returning from cache")
+        setData(cache[url]);
+        setLoading(false);
+        setError(null);
+      } else {
+
+      console.log(url+" is being called")
       try {
         const { data } = await axios.get(url,{headers: {
-          'Authorization': `Bearer ${userInfo.token}`,
+         'Authorization': `Bearer ${userInfo.token}`,
           'Content-Type': 'application/json',
         }});
-        // alert('callapi'+url)
-        console.log('URL:::'+url);
+        if (useCache) cache[url] = data;
         setData(data);
         setLoading(false);
-        setError(false)
+        setError(null)
       } catch (err) {
-          console.log(err)
-        setError(true);
+        console.log(err)
+        if (err.response.status ==='401'){
+          console.log("unauthorised")
+        }
+        setError(err);
+        setData(null)
         setLoading(false);
       }
-    };
+    }};
     fetchData();
   }, [url]);
+  
     
   return {data, loading, error}
 };
 
+export { useFetch };
