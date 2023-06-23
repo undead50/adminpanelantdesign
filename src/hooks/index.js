@@ -75,9 +75,12 @@ export const useApiPost = () => {
         setError(null)
       } catch (err) {
         console.log(err)
-        if (err.response.status ==='401'){
-          console.log("unauthorised")
+        if (err){
+          if (err.response.status ==='401'){
+            console.log("unauthorised")
+          }
         }
+       
         setError(err);
         setData(null)
         setLoading(false);

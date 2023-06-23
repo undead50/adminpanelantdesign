@@ -8,6 +8,8 @@ import { useNotification } from '../../hooks/index'
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
+const { Search } = Input;
+const onSearch = (value) => console.log(value);
 
 
 function Create() {
@@ -20,6 +22,9 @@ function Create() {
     const { callNotification } = useNotification();
     const [selectedbranchDept, setSelectedbranchDept] = useState(null);
     const [branchOrDepartment, setbranchOrDepartment] = useState('Branch');
+
+
+    const onTeamMemberAdd = (value) => console.log(value);
 
 
     const [auditEntryForm] = Form.useForm();
@@ -40,7 +45,7 @@ function Create() {
         if (branchOrDepartment === "Branch") {
             console.log("isLoading:::" + loading)
             if (error) {
-                alert(error.response.status)
+               // alert(error.response.status)
                 return
             }
 
@@ -77,13 +82,16 @@ function Create() {
     };
 
 
-    const content = <Form form={auditEntryForm} onFinish={onFinish} layout='vertical'>
+    const content = 
+    
+    <div style={{height: '100%', margin: '12px'}}>
+    <Form form={auditEntryForm} onFinish={onFinish} layout='vertical' >
 
         <h2>Audit Entry Form</h2>
 
-        <Space direction='vertical' size={12} block = {true} >
+   
 
-        <Row gutter={16} >
+        <Row gutter={20} >
 
             <Col span={6}>
 
@@ -138,7 +146,7 @@ function Create() {
 
 
 
-        <Row gutter={16} >
+        <Row gutter={20} >
             <Col span={6}>
 
                 <Form.Item name="headOfAuditUnit" label="Head of Audit Unit (BM/Dept Head)" rules={[{ required: true }]}>
@@ -162,6 +170,7 @@ function Create() {
             </Col>
 
             <Col span={6}>
+
                 <Form.Item name="auditTeamLeader" label="Audit Team Leader" rules={[{ required: true }]}>
                     <Input placeholder='Please enter...'></Input>
                 </Form.Item>
@@ -169,15 +178,18 @@ function Create() {
 
         </Row>
 
-        <Row gutter={16} >
+        <Row gutter={20} >
 
             <Col span={6}>
                 <Form.Item name="auditTeamList" label="Audit Team List" rules={[{ required: true }]}>
-                    <Input placeholder='Please enter'></Input>
+       
+                    <Search placeholder="Enter audit member name" onSearch={onTeamMemberAdd} enterButton="Add"
+ />
+
                 </Form.Item>
             </Col>
 
-            <Col span={6}>
+            {/* <Col span={6}>
                 <Form.Item name="acmNo" label="ACM No" rules={[{ required: true }]}>
                     <Input />
                 </Form.Item>
@@ -189,7 +201,7 @@ function Create() {
                         format='YYYY-MM-DD'
                     />
                 </Form.Item>
-            </Col>
+            </Col> */}
 
             <Col span={6}>
                 <Form.Item name="No of staff" label="No of staff at time of Audit" rules={[{ required: true }]}>
@@ -201,7 +213,7 @@ function Create() {
 
         </Row>
 
-        </Space>
+      
 
         <Form.Item>
             <Button type="primary" htmlType="submit">Submit</Button>
@@ -209,6 +221,7 @@ function Create() {
 
 
     </Form>
+    </div>
     return (content);
 }
 

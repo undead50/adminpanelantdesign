@@ -60,18 +60,18 @@ const AdminLayout = () => {
             </Button>
           </div>
         </Header>
-        <Content style={{ margin: '16px' }}>
+        <Content className='site-layout-background' style={{ margin: '16px' , padding:'12px', height: '100%',}}>
         
           <div
-            className="site-layout-background"
-            style={{ padding: 16, minHeight: 360 }}
+          
+           
           >
             <Outlet/>
           </div>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
+        {/* <Footer style={{ textAlign: 'center', height:'50px', display:'flex', justifyContent:'center', alignContent:'center' }}>
           <h3>Citizens Bank International ©2023</h3> 
-        </Footer>
+        </Footer> */}
       </Layout>
     </Layout>
   );
