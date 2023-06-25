@@ -34,3 +34,14 @@
   font-weight:500;
   
 }
+
+
+.ant-form-item-label label{
+  font-size: 11px !important;
+  font-weight:500;
+  
+}
+
+.ant-form-item-explain label {
+  margin-bottom: 20px !important;
+}

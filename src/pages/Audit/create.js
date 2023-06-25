@@ -1,9 +1,10 @@
-import { Form, Select, Radio, DatePicker, Input, Button, Row, Col, Space } from 'antd';
+import { Form, Select, Radio, DatePicker, Input, Button, Row, Col, Space, InputNumber } from 'antd';
 import { useFetch } from '../../hooks';
 import { BACKEND_URL } from '../../config';
 import { useEffect, useState } from 'react';
 import '../../index.css'
 import { useNotification } from '../../hooks/index'
+import AddMoreTag from '../../components/AddMoreTag';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -14,7 +15,7 @@ const onSearch = (value) => console.log(value);
 
 function Create() {
 
-    const [url, setUrl] = useState('/apims/branchList');
+    const [url, setUrl] = useState('/apims/bmEmployeeList');
     const { data, loading, error } = useFetch(url, true);
     const auditTypes = ['Internal Audit', 'Statutory Audit', 'NRB Inspection']
     const fiscalYears = ['2079/2080', '2080/2081', '2081/2082']
@@ -23,40 +24,110 @@ function Create() {
     const [selectedbranchDept, setSelectedbranchDept] = useState(null);
     const [branchOrDepartment, setbranchOrDepartment] = useState('Branch');
 
-
-    const onTeamMemberAdd = (value) => console.log(value);
-
-
+    const [auditTeamMembers, setAuditTeamMembers] = useState([]);
     const [auditEntryForm] = Form.useForm();
 
-    useEffect(() => {
+    const [branchList, setBranchList] = useState([]);
+    const [deptList, setDeptList] = useState([]);
 
 
-        if (branchOrDepartment === "Branch") {
-            setUrl('/apims/branchList');
+    const steps = [
+        {
+          title: 'First',
+          content: 'First-content',
+        },
+        {
+          title: 'Second',
+          content: 'Second-content',
+        },
+        {
+          title: 'Last',
+          content: 'Last-content',
+        },
+      ];
+
+
+
+    useEffect(()=> {
+        console.log(selectedbranchDept)
+        if(branchOrDepartment === 'Branch'){
+
+            if(branchList.length===0){
+                    return
+            }
+            
+            const  selectedBranch = branchList.find((branch) => branch.solDesc === selectedbranchDept);
+            if (selectedBranch !== undefined){
+            console.log("selected:::"+ selectedBranch)
+    
+                auditEntryForm.setFieldsValue({
+                    HODorBM: selectedBranch.employeeName
+                })
+            }
+
         }
         else {
-            setUrl('/apims/departmentList')
-        }
-    }, [branchOrDepartment]);
+            if(deptList.length===0){
+                return
+           }
 
+           const  selectedDept = deptList.find((dept) => dept.departmentName === selectedbranchDept);
+           if (selectedDept !== undefined){
+            console.log("selected:::"+ selectedDept)
+    
+                auditEntryForm.setFieldsValue({
+                    HODorBM: selectedDept.employeeName
+                })
+            }
+
+        }
+
+
+    }, [selectedbranchDept])
+
+    const  callback = (items) => {
+        setAuditTeamMembers(items)
+    }
+
+    useEffect(()=> {
+        auditEntryForm.setFieldsValue({
+            auditTeamMembers: auditTeamMembers
+        })
+    }, [auditTeamMembers])
+
+
+
+    useEffect(() => {
+        if (branchOrDepartment === "Branch") {
+            setUrl('/apims/bmEmployeeList');
+        }
+        else {
+            setUrl('/apims/hodEmployeeList')
+        }
+        auditEntryForm.setFieldsValue({
+            auditUnit: branchOrDepartment
+        })
+
+    }, [branchOrDepartment]);
 
     useEffect(() => {
         if (branchOrDepartment === "Branch") {
             console.log("isLoading:::" + loading)
             if (error) {
-               // alert(error.response.status)
+               alert(error.response.status)
                 return
             }
 
             if (data) {
-                console.log("branchList:::" + data.Data.categoriesList)
-                setbranchDeptOptions(data.Data.categoriesList.map(a => a.REF_DESC))
+                console.log("branchList:::" + data.branchList)
+                setBranchList(data.branchList)
+                setbranchDeptOptions(data.branchList.map(a => a.solDesc))
             }
         } else {
             if (data) {
-                console.log("deptList:::" + data.Data.departmentList)
-                setbranchDeptOptions(data.Data.departmentList.map(a => a.departmentName))
+                setDeptList(data.departmentList)
+                console.log("deptList:::" + data.departmentList)
+                setbranchDeptOptions(data.departmentList.map(a => a.departmentName))
             }
 
         }
@@ -65,13 +136,17 @@ function Create() {
 
     const handleBranchDepartment = (e) => {
         auditEntryForm.setFieldsValue({
-            branchDepartment: null
-        })
+            branchDepartment: null,
+            HODorBM: null
 
+        })
         setbranchOrDepartment(e.target.value)
     }
 
+  
+
     const onFinish = (values) => {
+
         console.log('Form values:', values);
         alert(values.fiscalYear)
         // alert(values.onsiteAuditPeriod)
@@ -117,10 +192,8 @@ function Create() {
                 <div style={{ display: 'flex', justifyContent: 'center' }} >
                     <Form.Item name="auditUnit" label="Audit Unit" rules={[{ required: true }]}>
                         <Radio.Group onChange={handleBranchDepartment} defaultValue={branchOrDepartment} >
-
                             <Radio value="Branch">Branch</Radio>
                             <Radio value="Department">Department</Radio>
-
                         </Radio.Group>
                     </Form.Item>
                 </div>
@@ -130,7 +203,7 @@ function Create() {
             <Col span={6}>
 
                 <Form.Item name="branchDepartment" label={branchOrDepartment} rules={[{ required: true }]}>
-                    <Select value={selectedbranchDept} showSearch allowClear placeholder={`Select ${branchOrDepartment}`} >
+                    <Select onChange={(e)=>setSelectedbranchDept(e)} showSearch allowClear placeholder={`Select ${branchOrDepartment}`} >
                         {branchDeptOptions.map((item) => (
                             <Option key={item} value={item}>{item}</Option>
                         ))}
@@ -149,10 +222,10 @@ function Create() {
         <Row gutter={20} >
             <Col span={6}>
 
-                <Form.Item name="headOfAuditUnit" label="Head of Audit Unit (BM/Dept Head)" rules={[{ required: true }]}>
-                    <Select mode="multiple">
-                        <Option value="head1">Head 1</Option>
-                        {/* Add more options as needed */}
+                <Form.Item name="HODorBM" label={branchOrDepartment === 'Branch' ? "Branch Manager" : "Head of Department"} rules={[{ required: true }]}>
+                    <Select  disabled>
+                      
+                      
                     </Select>
                 </Form.Item>
             </Col>
@@ -169,23 +242,30 @@ function Create() {
                 </Form.Item>
             </Col>
 
-            <Col span={6}>
 
-                <Form.Item name="auditTeamLeader" label="Audit Team Leader" rules={[{ required: true }]}>
-                    <Input placeholder='Please enter...'></Input>
+            <Col span={6}>
+                <Form.Item name="netWorkingDays" label="Net Working Days" rules={[{ required: true }]}>
+                    <InputNumber min = {1} placeholder='Enter...'  style={{ width: '100%' }}/>
                 </Form.Item>
             </Col>
+
+           
 
         </Row>
 
         <Row gutter={20} >
 
-            <Col span={6}>
-                <Form.Item name="auditTeamList" label="Audit Team List" rules={[{ required: true }]}>
-       
-                    <Search placeholder="Enter audit member name" onSearch={onTeamMemberAdd} enterButton="Add"
- />
 
+        <Col span={6}>
+
+<Form.Item name="auditTeamLeader" label="Audit Team Leader" rules={[{ required: true }]}>
+    <Input placeholder='Please enter...'></Input>
+</Form.Item>
+</Col>
+
+            <Col span={6}>
+            <Form.Item  name="auditTeamMembers" label="Audit Team Members"  rules={[{ required: true }]}>
+                <AddMoreTag parentCallback={callback}></AddMoreTag>
                 </Form.Item>
             </Col>
 
@@ -205,7 +285,7 @@ function Create() {
 
             <Col span={6}>
                 <Form.Item name="No of staff" label="No of staff at time of Audit" rules={[{ required: true }]}>
-                    <Input placeholder='Enter...' type='Number' />
+                    <InputNumber min = {1} placeholder='Enter...'  style={{ width: '100%' }}/>
                 </Form.Item>
             </Col>
 
@@ -215,7 +295,7 @@ function Create() {
 
       
 
-        <Form.Item>
+        <Form.Item style={{marginTop: "20px"}}>
             <Button type="primary" htmlType="submit">Submit</Button>
         </Form.Item>
 
