@@ -9,6 +9,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 
 
 axios.defaults.baseURL = BACKEND_URL;
+axios.defaults.timeout = 50000;
 
 export const useNotification = () => {
   const callNotification = (description,type) =>{
@@ -76,9 +77,19 @@ export const useApiPost = () => {
       } catch (err) {
         console.log(err)
         if (err){
-          if (err.response.status ==='401'){
-            console.log("unauthorised")
+          if (err.response) {
+            if (err.response.status === 401){
+              console.log("unauthorised.")
+              alert("unauthorised")
+           }
           }
+          else if(err.request){
+            console.log('Error request', err.request);
+          }
+          else {
+            console.log('Error', err.message);
+          }
+          
         }
        
         setError(err);

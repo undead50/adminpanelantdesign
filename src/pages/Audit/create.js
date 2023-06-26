@@ -31,20 +31,7 @@ function Create() {
     const [deptList, setDeptList] = useState([]);
 
 
-    const steps = [
-        {
-          title: 'First',
-          content: 'First-content',
-        },
-        {
-          title: 'Second',
-          content: 'Second-content',
-        },
-        {
-          title: 'Last',
-          content: 'Last-content',
-        },
-      ];
+   
 
 
 
@@ -61,7 +48,8 @@ function Create() {
             console.log("selected:::"+ selectedBranch)
     
                 auditEntryForm.setFieldsValue({
-                    HODorBM: selectedBranch.employeeName
+                    auditHead: selectedBranch.employeeName,
+                    corporateTitleAuditHead: selectedBranch.branchManagerDesignation
                 })
             }
 
@@ -73,10 +61,10 @@ function Create() {
 
            const  selectedDept = deptList.find((dept) => dept.departmentName === selectedbranchDept);
            if (selectedDept !== undefined){
-            console.log("selected:::"+ selectedDept)
-    
+                 console.log("selected:::"+ selectedDept)
                 auditEntryForm.setFieldsValue({
-                    HODorBM: selectedDept.employeeName
+                    auditHead: selectedDept.employeeName,
+                    corporateTitleAuditHead: selectedDept.designation
                 })
             }
 
@@ -114,7 +102,13 @@ function Create() {
         if (branchOrDepartment === "Branch") {
             console.log("isLoading:::" + loading)
             if (error) {
-               alert(error.response.status)
+               
+                if (error.request){
+                    alert(error.code)
+                }
+                else if (error.response){
+                    alert(error.response)
+                }
                 return
             }
 
@@ -136,8 +130,11 @@ function Create() {
 
     const handleBranchDepartment = (e) => {
         auditEntryForm.setFieldsValue({
-            branchDepartment: null,
-            HODorBM: null
+            auditUnitDesc: null,
+            auditHead: null,
+            corporateTitleAuditHead: null
+
+            
 
         })
         setbranchOrDepartment(e.target.value)
@@ -170,7 +167,7 @@ function Create() {
 
             <Col span={6}>
 
-                <Form.Item name="auditType" label="Type of Audit" rules={[{ required: true }]}>
+                <Form.Item name="typeOfAudit" label="Type of Audit" rules={[{ required: true }]}>
                     <Select placeholder="Select audit type" >
                         {auditTypes.map((type) => (
                             <Option key={type} value={type}>{type}</Option>
@@ -202,8 +199,8 @@ function Create() {
 
             <Col span={6}>
 
-                <Form.Item name="branchDepartment" label={branchOrDepartment} rules={[{ required: true }]}>
-                    <Select onChange={(e)=>setSelectedbranchDept(e)} showSearch allowClear placeholder={`Select ${branchOrDepartment}`} >
+                <Form.Item name="auditUnitDesc" label={branchOrDepartment} rules={[{ required: true }]}>
+                    <Select onChange={(e)=>setSelectedbranchDept(e)} showSearch  placeholder={`Select ${branchOrDepartment}`} >
                         {branchDeptOptions.map((item) => (
                             <Option key={item} value={item}>{item}</Option>
                         ))}
@@ -220,11 +217,20 @@ function Create() {
 
 
         <Row gutter={20} >
+
+        <Col span={6}>
+
+                <Form.Item name="corporateTitleAuditHead" label="Title" rules={[{ required: true }]}>
+                    <Select  disabled>
+                    
+                    </Select>
+                </Form.Item>
+                </Col>
+
             <Col span={6}>
 
-                <Form.Item name="HODorBM" label={branchOrDepartment === 'Branch' ? "Branch Manager" : "Head of Department"} rules={[{ required: true }]}>
+                <Form.Item name="auditHead" label={branchOrDepartment === 'Branch' ? "Branch Manager" : "Head of Department"} rules={[{ required: true }]}>
                     <Select  disabled>
-                      
                       
                     </Select>
                 </Form.Item>
@@ -244,8 +250,8 @@ function Create() {
 
 
             <Col span={6}>
-                <Form.Item name="netWorkingDays" label="Net Working Days" rules={[{ required: true }]}>
-                    <InputNumber min = {1} placeholder='Enter...'  style={{ width: '100%' }}/>
+                <Form.Item name="netWorkingDays" label="Net Working Days"  rules={[{ required: true }]}>
+                    <InputNumber min = {1} type = 'number' placeholder='Enter...'  style={{ width: '100%' }}/>
                 </Form.Item>
             </Col>
 
@@ -285,7 +291,7 @@ function Create() {
 
             <Col span={6}>
                 <Form.Item name="No of staff" label="No of staff at time of Audit" rules={[{ required: true }]}>
-                    <InputNumber min = {1} placeholder='Enter...'  style={{ width: '100%' }}/>
+                    <InputNumber min = {1} type = 'number' placeholder='Enter...'  style={{ width: '100%' }}/>
                 </Form.Item>
             </Col>
 
