@@ -26,15 +26,16 @@ const LoginPage = () => {
       password:values.password
     }
     dispatch(postLoginData(reqData))
-    alert(data)
+   
     console.log(data)
     if (data.Code === "0"){
         dispatch(setUser({
-          userName: data.Data.userName,
+          userName: data.Data.employeeName,
           solId:data.Data.solId,
           email:data.Data.email,
           departmentName:data.Data.departmentName,
-          token:data.Data.token
+          token:data.Data.token,
+          domainName:data.Data.domainUserName
       }))
       navigate('/');
       callNotification('Login Success','success')

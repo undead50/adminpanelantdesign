@@ -25,8 +25,8 @@ function SideBard() {
       </Menu.Item> */}
       <SubMenu key="sub1" icon={<UserOutlined />} title="Audit">
         <Menu.Item key="4"><Link to = {'/createAudit'}>Create Audit</Link></Menu.Item>
+        <Menu.Item key="6"><Link to = {'/listAudit'}>List Audit</Link></Menu.Item>
         <Menu.Item key="5"><Link to = {'/addComment'}>Add Comment</Link></Menu.Item>
-        <Menu.Item key="6"><Link to = {'/indexAudit'}>List Audit</Link></Menu.Item>
         <Menu.Item key="7">User 3</Menu.Item>
       </SubMenu>
       {/* <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">

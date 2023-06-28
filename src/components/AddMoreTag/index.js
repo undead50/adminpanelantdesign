@@ -57,7 +57,7 @@ const AddMoreTag = ({ parentCallback }) => {
         setInputValue('');
     };
     const tagInputStyle = {
-        width: '100%',
+        width: '30%',
         verticalAlign: 'top',
     };
 
@@ -122,7 +122,7 @@ const AddMoreTag = ({ parentCallback }) => {
                         onSearch={handleInputConfirm}
                         type="text"
                         size="middle"
-                        enterButton="+"
+                        enterButton="Add"
                         allowClear= {false}
                         style={tagInputStyle}
                         value={inputValue}
@@ -133,7 +133,7 @@ const AddMoreTag = ({ parentCallback }) => {
                         
                     />
                 ) : (
-                    <Button icon={<PlusOutlined />} type="dashed" block onClick={showInput} style={{ fontSize: '13px' }}>
+                    <Button icon={<PlusOutlined />} type="dashed" block onClick={showInput} style={{ fontSize: '13px', width:'30%' }}>
                         Add audit team member
                     </Button>
                 )}

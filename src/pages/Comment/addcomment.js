@@ -8,6 +8,7 @@ import AddMoreTag from '../../components/AddMoreTag';
 import Item from 'antd/es/list/Item';
 
 const { Option } = Select;
+const { TextArea } = Input;
 
 function AddComment() {
 
@@ -22,6 +23,9 @@ function AddComment() {
     const [subhead1, setSubHead1] = useState(null);
     const [subhead2, setSubHead2] = useState(null);
     const [subhead3, setSubHead3] = useState(null);
+    const [standardComment, setStandardComment] = useState(null);
+    const [riskRating, setRiskRating] = useState(null);
+
     const [subhead1List, setSubhead1List] = useState([]);
     const [subhead2List, setSubhead2List] = useState([]);
     const [subhead3List, setSubhead3List] = useState([]);
@@ -45,83 +49,156 @@ function AddComment() {
 
     }, [data, error, loading]);
 
-    useEffect(()=>{
-        if (data){
+    useEffect(() => {
+        if (data) {
 
-          commentEntryForm.setFieldsValue({
+            commentEntryForm.setFieldsValue({
                 head: null,
                 subHead1: null,
                 subHead2: null,
-                subHead3: null
+                subHead3: null,
+                standardComment:null,
+                riskRating:null
             })
-            
-                
-                setSubhead1List([])
-                setSubhead2List([])
-                setSubhead3List([])
-            
 
-            const heads =  Array.from(new Set(data.headingList.filter(item => item.auditUnit === auditUnit).map((item) => item.head)))
-            setHeadList(heads)
-            console.log("heads:::"+headList)
-           
-        }
-    }, [auditUnit])
-
-    useEffect(()=>{
-        if (data){
-            commentEntryForm.setFieldsValue({
-                subHead1: null,
-                subHead2: null,
-                subHead3: null
-            })
+            setHead(null)
+            setSubHead1(null)
+            setSubHead2(null)
+            setSubHead3(null)
+            setStandardComment(null)
+            setRiskRating(null)
+            setHeadList([])
             setSubhead1List([])
             setSubhead2List([])
             setSubhead3List([])
-            const subHead1s = Array.from(new Set(data.headingList.filter(item => item.auditUnit === auditUnit &&  item.head === head).map((item) => item.subHead1)))
+            setStandardCommentList([])
+
+
+            const heads = Array.from(new Set(data.headingList.filter(item => item.auditUnit === auditUnit).map((item) => item.head)))
+            setHeadList(heads)
+            console.log("heads:::" + headList)
+
+        }
+    }, [auditUnit])
+
+    useEffect(() => {
+        if (data) {
+            commentEntryForm.setFieldsValue({
+                subHead1: null,
+                subHead2: null,
+                subHead3: null,
+                standardComment:null,
+                riskRating:null
+            })
+            
+            setSubHead1(null)
+            setSubHead2(null)
+            setSubHead3(null)
+            setStandardComment(null)
+            setRiskRating(null)
+            setSubhead2List([])
+            setSubhead3List([])
+            setStandardCommentList([])
+
+            const subHead1s = Array.from(new Set(data.headingList.filter(item => item.auditUnit === auditUnit && item.head === head).map((item) => item.subHead1)))
             setSubhead1List(subHead1s)
         }
-    },[head])
+    }, [head])
 
 
-    useEffect(()=>{
-        if (data){
-                commentEntryForm.setFieldsValue({
-                    subHead2: null,
-                    subHead3: null
-                })
-                setSubhead2List([])
-                setSubhead3List([])
-                const subHead2s = Array.from(new Set(data.headingList.filter(item => item.auditUnit === auditUnit && item.head === head && item.subHead1 === subhead1 ).map((item) => item.subHead2)))
-                setSubhead2List(subHead2s)
+    useEffect(() => {
+        if (data) {
+
+            commentEntryForm.setFieldsValue({
+                subHead2: null,
+                subHead3: null,
+                standardComment:null,
+                riskRating:null
+            })
+        
+            setSubHead2(null)
+            setSubHead3(null)
+            setStandardComment(null)
+            setRiskRating(null)
+            setSubhead2List([])
+            setSubhead3List([])
+            setStandardCommentList([])
+            const subHead2s = Array.from(new Set(data.headingList.filter(item => item.auditUnit === auditUnit && item.head === head && item.subHead1 === subhead1).map((item) => item.subHead2)))
             
+            setSubhead2List(subHead2s)
+
         }
-    }, [ subhead1])
+    }, [subhead1])
 
-    useEffect(()=>{
-        if (data){
+    useEffect(() => {
+        if (data) {
+            commentEntryForm.setFieldsValue({
+                subHead3: null,
+                standardComment:null,
+                riskRating:null
+            })   
+           
+            setSubHead3(null)
+            setStandardComment(null)
+            setRiskRating(null)
+            setSubhead3List([])
+            setStandardCommentList([])
+
+            if (subhead2 === 'N/A'){
+                const comments = Array.from(new Set(data.headingList.filter(item => item.auditUnit === auditUnit && item.head === head && item.subHead1 === subhead1 ).map((item) => item.standardComment)))
+                setSubHead3(subhead2)
+                setStandardCommentList(comments)
                 commentEntryForm.setFieldsValue({
-                    subHead3: null
+                    subHead3: subhead2
                 })
-                setSubhead3List([])
-                const subHead3s = Array.from(new Set(data.headingList.filter(item => item.auditUnit === auditUnit && item.head === head && item.subHead1 === subhead1 && item.subHead2 === subhead2 ).map((item) => item.subHead3)))
-                alert(subHead3s.length)
+            }
+            else {
+                const subHead3s = Array.from(new Set(data.headingList.filter(item => item.auditUnit === auditUnit && item.head === head && item.subHead1 === subhead1 && item.subHead2 === subhead2).map((item) => item.subHead3)))
                 setSubhead3List(subHead3s)
-            
+            }
+
         }
     }, [subhead2])
 
-    useEffect(()=>{
-        if (data){
-                
-                setStandardCommentList([])
-                const comments = Array.from(new Set(data.headingList.filter(item => item.auditUnit === auditUnit && item.head === head && item.subHead1 === subhead1 && item.subHead2 === subhead2 && item.subHead3 === subhead3 ).map((item) => item.standardComment)))
-                
-
-                setStandardCommentList(comments)
-            
+    useEffect(() => {
+        if (data) {                       
+            commentEntryForm.setFieldsValue({
+                standardComment:null,
+                riskRating:null
+            })
+           
+            setStandardComment(null)
+            setRiskRating(null)
+            setStandardComment(null)
+            setRiskRating(null)
+            setStandardCommentList([])
+         
+            const comments = Array.from(new Set(data.headingList.filter(item => item.auditUnit === auditUnit && item.head === head && item.subHead1 === subhead1 && item.subHead2 === subhead2 && item.subHead3 === subhead3).map((item) => item.standardComment)))
+            setStandardCommentList(comments)
         }
     }, [subhead3])
+
+
+
+    useEffect(() => {
+        if (data) {
+           
+           
+        
+        
+            const comment = data.headingList.find(item => item.auditUnit === auditUnit && item.head === head && item.subHead1 === subhead1 && item.subHead2 === subhead2 && item.subHead3 === subhead3 && item.standardComment === standardComment)
+            if (comment) {
+                commentEntryForm.setFieldsValue({
+                    riskRating: comment.riskRating
+                })
+                setRiskRating(comment.riskRating)
+            }
+            }
+        
+    }, [standardComment])
+
+
+
 
 
 
@@ -144,7 +221,7 @@ function AddComment() {
                     <Col span={6}>
 
                         <Form.Item name="auditUnit" label="Audit Unit" rules={[{ required: true }]}>
-                            <Select onChange={(e)=>setAuditUnit(e)} placeholder="Select audit unit" >
+                            <Select onChange={(e) => setAuditUnit(e)} placeholder="Select audit unit" >
                                 {auditUnits.map((unit) => (
                                     <Option key={unit} value={unit}>{unit}</Option>
                                 ))}
@@ -156,7 +233,7 @@ function AddComment() {
                     <Col span={6}>
 
                         <Form.Item name="head" label="Head" rules={[{ required: true }]}>
-                            <Select onChange={(e)=>setHead(e)} placeholder="Select Head" >
+                            <Select onChange={(e) => setHead(e)} placeholder="Select Head" >
                                 {headList.map((head) => (
                                     <Option key={head} value={head}>{head}</Option>
                                 ))}
@@ -169,11 +246,10 @@ function AddComment() {
                     <Col span={6}>
 
                         <Form.Item name="subHead1" label="Subhead 1" rules={[{ required: true }]}>
-                            <Select onChange={(e)=>setSubHead1(e)} placeholder="Select Subhead 1" >
-                            {subhead1List.map((item) => (
+                            <Select onChange={(e) => setSubHead1(e) } placeholder="Select Subhead 1" >
+                                {subhead1List.map((item) => (
                                     <Option key={item} value={item}>{item}</Option>
                                 ))}
-
 
                             </Select>
                         </Form.Item>
@@ -182,11 +258,10 @@ function AddComment() {
                     <Col span={6}>
 
                         <Form.Item name="subHead2" label="Subhead 2" rules={[{ required: true }]}>
-                            <Select onChange={(e)=>setSubHead2(e)}  placeholder="Select Subhead 2" >
-                            { subhead2List.map((item) => (
+                            <Select onChange={(e) => setSubHead2(e)} placeholder="Select Subhead 2" >
+                                {subhead2List.map((item) => (
                                     <Option key={item} value={item}>{item}</Option>
                                 ))}
-
                             </Select>
                         </Form.Item>
                     </Col>
@@ -200,8 +275,8 @@ function AddComment() {
                     <Col span={6}>
 
                         <Form.Item name="subHead3" label="Subhead 3" rules={[{ required: true }]}>
-                            <Select onChange={(e)=>setSubHead3(e)} placeholder="Select Subhead 3" >
-                            { subhead3List.map((item) => (
+                            <Select onChange={(e) => setSubHead3(e)} placeholder="Select Subhead 3" >
+                                {subhead3List.map((item) => (
                                     <Option key={item} value={item}>{item}</Option>
                                 ))}
 
@@ -212,16 +287,17 @@ function AddComment() {
                     <Col span={6}>
 
                         <Form.Item name="standardComment" label="Standard Comment" rules={[{ required: true }]}>
-                            <Select placeholder="Select Standard Comment" >
-
-
+                            <Select onChange={(e) => setStandardComment(e)} placeholder="Select Standard Comment" >
+                                {standardCommentList.map((item) => (
+                                    <Option key={item} value={item}>{item}</Option>
+                                ))}
                             </Select>
                         </Form.Item>
                     </Col>
 
                     <Col span={6}>
 
-                        <Form.Item name="riskgrade" label="Risk Grade" rules={[{ required: true }]}>
+                        <Form.Item name="riskRating" label="Risk Grade" rules={[{ required: true }]}>
                             <Input disabled placeholder="Risk Grade" >
 
 
@@ -233,10 +309,9 @@ function AddComment() {
 
                         <Form.Item name="nonCompliance" label="Non Compliance" rules={[{ required: true }]}>
                             <Select placeholder="Select Non Compliance" >
-                            { nonCompliances.map((item) => (
+                                {nonCompliances.map((item) => (
                                     <Option key={item} value={item}>{item}</Option>
                                 ))}
-
 
                             </Select>
                         </Form.Item>
@@ -249,7 +324,7 @@ function AddComment() {
                     <Col span={6}>
 
                         <Form.Item name="commentSpecialMark" label="Special Markings" rules={[{ required: true }]}>
-                            <Select  mode="multiple"  placeholder="Select Special Markings" >
+                            <Select mode="multiple" placeholder="Select Special Markings" >
                                 <Option key={1}>Special Marking 1</Option>
                                 <Option key={2}>Special Marking 2</Option>
                                 <Option key={3}>Special Marking 3</Option>
@@ -270,9 +345,22 @@ function AddComment() {
 
                 </Row>
 
-                <Form.Item style={{marginTop: "20px"}}>
-            <Button type="primary" htmlType="submit">Submit</Button>
-             </Form.Item>
+
+                <Row  >
+                <Col span={24}>
+
+                    <Form.Item  name="commentDetail" label="Comment Details" rules={[{ required: true }]}>
+
+                        <TextArea style={{ width: "100%" }} placeholder='Please enter...' rows={5} />
+
+                    </Form.Item>
+                    </Col>
+
+                </Row>
+
+                <Form.Item style={{ marginTop: "20px" }}>
+                    <Button type="primary" htmlType="submit">Submit</Button>
+                </Form.Item>
 
 
             </Form>
