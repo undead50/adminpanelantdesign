@@ -333,6 +333,19 @@ function AddComment() {
                             </Select>
                         </Form.Item>
                     </Col>
+
+                    <Col span={6}>
+
+                <Form.Item name="specialAttention" label="Special Attention" rules={[{ required: false }]}>
+                    <Select mode="multiple" placeholder="Select Special Attention" >
+                        <Option key={1}>Special Marking 1</Option>
+                        <Option key={2}>Special Marking 2</Option>
+                        <Option key={3}>Special Marking 3</Option>
+
+
+                    </Select>
+                </Form.Item>
+                </Col>
                     <Col span={6}>
 
                         <Form.Item name="refPolicy" label="Ref. Policy/Directive" rules={[{ required: true }]}>

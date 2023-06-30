@@ -1,6 +1,5 @@
 import { Form, Select, Radio, DatePicker, Input, Button, Row, Col, Modal, InputNumber } from 'antd';
 import { useFetch } from '../../hooks';
-import { BACKEND_URL } from '../../config';
 import { useEffect, useState } from 'react';
 import '../../index.css'
 import { useNotification } from '../../hooks/index'
@@ -13,8 +12,6 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
-const { Search } = Input;
-const onSearch = (value) => console.log(value);
 
 
 
@@ -40,19 +37,12 @@ function Create() {
 
     const [branchList, setBranchList] = useState([]);
     const [deptList, setDeptList] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
 
     const { userInfo } = useSelector((state) => state.user);
 
+
     
-
-    const handleOk = () => {
-       auditEntryForm.resetFields()
-       setpostData(null)
-      };
-
-
 
     useEffect(() => {
         console.log(selectedbranchDept)
@@ -116,8 +106,8 @@ function Create() {
     }, [branchOrDepartment]);
 
     useEffect(() => {
+     
         if (branchOrDepartment === "Branch") {
-            console.log("isLoading:::" + loading)
             if (error) {
 
                 if (error.request) {
@@ -125,24 +115,24 @@ function Create() {
                 }
                 else if (error.response) {
                     alert(error.response)
+                   
                 }
                 return
             }
 
-            if (data) {
-                if (data.branchList){
+            if (data && data.branchList ) {
+                
                     console.log("branchList:::" + data.branchList)
                     setBranchList(data.branchList)
                     setbranchDeptOptions(data.branchList.map(a => a.solDesc))
-                }
+                
             }
         } else {
-            if (data) {
-                if (data.departmentList){
+            if (data && data.departmentList ) {
                     setDeptList(data.departmentList)
                     console.log("deptList:::" + data.departmentList)
                     setbranchDeptOptions(data.departmentList.map(a => a.departmentName))
-                }
+                
             }
 
         }
@@ -155,25 +145,29 @@ function Create() {
             auditHead: null,
             corporateTitleAuditHead: null
         })
+        setbranchDeptOptions([])
         setbranchOrDepartment(e.target.value)
     }
 
 
     useEffect(() => {
         if (response) {
-            console.log("Helloooooooo::"+response.status)
             //alert(response.status)
             if (response.status===200){
               
                 Modal.success({
                     content: 'Audit record added successfully.',
                     onOk: () => {
-                        console.log("OKKKKK")
+                        auditEntryForm.resetFields()
+                        setpostData(null)
+                        auditEntryForm.setFieldsValue({
+                            auditUnit: "Branch"
+                        })
                     }
                   });
-
             }
-           setPostURL(null)           
+           setPostURL(null)      
+
         }
         if (postError){
             if (postError.request){
@@ -189,7 +183,7 @@ function Create() {
             
         }
 
-    }, [isLoading, response, postError]);
+    }, [response, postError, isLoading]);
 
 
     const onFinish = (values) => {
@@ -200,13 +194,12 @@ function Create() {
         postData['onsiteStartDate'] = values.onsiteAuditPeriod[0].format('YYYY-MM-DD')
         postData['onsiteEndDate'] = values.onsiteAuditPeriod[1].format('YYYY-MM-DD')
         postData['createdBy'] = userInfo.domainName
+        postData['createdByName'] = userInfo.userName
+        postData['auditTeam'] = auditTeam.map(memberName => ({ memberName }));
         delete postData.onsiteAuditPeriod;
         delete postData.auditPeriod;
-        postData['auditTeam'] = auditTeam.map(memberName => ({ memberName }));
         setpostData(postData)
-
-       // console.log(postData)
-        // return
+        console.log("helloooo")
         setPostURL('/auditMaster/addRecord')
 
 

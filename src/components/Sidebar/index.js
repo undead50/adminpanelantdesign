@@ -11,7 +11,7 @@ import {
 
 const { SubMenu } = Menu;
 
-function SideBard() {
+function SideBar() {
   return (
     <Menu theme="light" defaultSelectedKeys={['1']} mode="inline">
       <Menu.Item key="1" icon={<PieChartOutlined />}>
@@ -38,4 +38,4 @@ function SideBard() {
   );
 }
 
-export default SideBard;
+export default SideBar;

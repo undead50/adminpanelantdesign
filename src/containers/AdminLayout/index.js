@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Layout, Breadcrumb, Button } from 'antd';
+import logo from '../../assets/images/logo.svg'
 import {
   LogoutOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate } from 'react-router-dom';
-import SideBard from '../../components/Sidebar';
+import SideBar from '../../components/Sidebar';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -27,38 +28,34 @@ const AdminLayout = () => {
       <Sider collapsible collapsed={collapsed} onCollapse={handleCollapse} style={{background: 'white'}}>
         <div className="logo">
 
-        <img src="https://www.ctznbank.com/assets/backend/uploads/logo-new.png" alt="Company Logo"
+        <img src={logo}
         style={{
           height:'40px',
-          width:'180px',
+          width:'160px',
+          marginTop:'-8px'
           
         }}
         />
         </div>
-        <SideBard/>
+        <SideBar/>
       </Sider>
+      <Content>
       <Layout className="site-layout">
-        <Header style={{ background: 'linear-gradient(to right, #468CC1, #3EAB94)',padding: 0 }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div
-              style={{ color: 'white', padding: '0 16px', fontSize: '18px' }}
-            >
-            </div>
+        <Header style={{ background: 'linear-gradient(to right, #468CC1, #3EAB94)',padding: 0,  position: 'sticky',top: 0,
+          zIndex: 1,
+          width: '100%',
+          display: 'flex', justifyContent:'right' , alignItems:'center'}}>
+         
+           
             <Button
               type="primary"
               icon={<LogoutOutlined />}
               onClick={handleLogout}
-              style={{ marginTop:'10px',marginRight:'20px'}}
+              style={{ marginTop:'0px',marginRight:'20px'}}
             >
               Logout
             </Button>
-          </div>
+     
         </Header>
         <Content className='site-layout-background' style={{ margin: '16px' , padding:'12px', height: '100%',}}>
           <div>
@@ -69,6 +66,7 @@ const AdminLayout = () => {
           <h3>Citizens Bank International ©2023</h3> 
         </Footer> */}
       </Layout>
+      </Content>
     </Layout>
   );
 };

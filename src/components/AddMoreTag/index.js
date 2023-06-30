@@ -43,9 +43,19 @@ const AddMoreTag = ({ parentCallback }) => {
             setTags([...tags, inputValue]);
             //   console.log(tags)
         }
+        // setInputVisible(false);
+        setInputValue('');
+    };
+
+    const handleOnBlur = () => {
+        if (inputValue && tags.indexOf(inputValue) === -1) {
+            setTags([...tags, inputValue]);
+            //   console.log(tags)
+        }
         setInputVisible(false);
         setInputValue('');
     };
+
     const handleEditInputChange = (e) => {
         setEditInputValue(e.target.value);
     };
@@ -127,7 +137,7 @@ const AddMoreTag = ({ parentCallback }) => {
                         style={tagInputStyle}
                         value={inputValue}
                         onChange={handleInputChange}
-                        onBlur={handleInputConfirm}
+                        onBlur={handleOnBlur}
                         onPressEnter={handleInputConfirm}
                         
                         

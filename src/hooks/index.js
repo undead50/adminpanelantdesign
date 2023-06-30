@@ -7,12 +7,6 @@ import { useSelector } from "react-redux";
 import { BACKEND_URL } from '../config';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-const RequestMethod = {
-
-  GET: "GET",
-  POST:""
-
-}
 
 
 axios.defaults.baseURL = BACKEND_URL;
@@ -34,7 +28,7 @@ export const useNotification = () => {
 const cache = {};
 
 
-export const useApiPost = (url,  reqData) => {
+export const useApiPost = (url,  data) => {
   const [isLoading, setIsLoading] = useState(false);
   const [postError, setPostError] = useState(null);
   const [response, setResponse] = useState(null);
@@ -42,7 +36,6 @@ export const useApiPost = (url,  reqData) => {
 
   useEffect(() => {
     if (!url){
-      console.log('returnnnnnnn')
       return 
     }
 
@@ -51,13 +44,12 @@ export const useApiPost = (url,  reqData) => {
       try {
         setIsLoading(true);
 
-        const response = await axios.post(url,  reqData, {
+        const response = await axios.post(url,  data, {
           headers: {
             'Authorization': `Bearer ${userInfo.token}`,
             'Content-Type': 'application/json',
           }});
         setResponse(response);
-        setIsLoading(false);
         setPostError(null);
       } catch (error) {
         if (error.response) {
@@ -65,21 +57,13 @@ export const useApiPost = (url,  reqData) => {
             alert("unauthorised")
           }
         }
-        else if (error.request) {
-          console.log('Error request', error.request);
-        }
-        else {
-          console.log("error final uncached")
-        }
-
-        setIsLoading(false);
         setPostError(error);
         setResponse(null)
       } finally {
         setIsLoading(false);
       }
     };
-    postData();
+   postData();
   }, [url])
 
   return { isLoading, postError, response };
@@ -96,13 +80,10 @@ const useFetch =  ( url, useCache = false) => {
     }
     const fetchData = async () => {
       if (useCache && cache[url]) {
-        console.log("returning from cache")
         setData(cache[url]);
         setLoading(false);
         setError(null);
       } else {
-
-        console.log(url + " is being called")
         try {
           const { data } = await axios.get(url, {
             headers: {
@@ -112,28 +93,17 @@ const useFetch =  ( url, useCache = false) => {
           });
           if (useCache) cache[url] = data;
           setData(data);
-          setLoading(false);
           setError(null)
         } catch (err) {
           console.log(err)
-          if (err) {
-            if (err.response) {
-              if (err.response.status === 401) {
-                console.log("unauthorised.")
-                alert("unauthorised")
+          if (err) {           
+              if (err.response?.status === 401) {
+              //handle unauthenticated flow
               }
-            }
-            else if (err.request) {
-              console.log('Error request', err.request);
-            }
-            else {
-              console.log('Error', err.message);
-            }
-
           }
-
           setError(err);
-          setData(null)
+          setData(null)     
+        }finally {
           setLoading(false);
         }
       }
