@@ -19,7 +19,7 @@ function ListAudit() {
 
 
     const navigateToDetailPage = props => { 
-      navigate('/addComment', {state: props })
+      navigate('/auditDetails/'+`${props.id}`, {state: props })
     }
 
     const getDateFromString = str => {
