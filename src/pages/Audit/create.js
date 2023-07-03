@@ -19,7 +19,9 @@ const { TextArea } = Input;
 function Create() {
 
     const [url, setUrl] = useState('/apims/bmEmployeeList');
-    const { data, loading, error } = useFetch(url, true);
+    const [ data, loading, error ] = useFetch(url, true);
+    const [ deptData, isloading, deptListError ] = useFetch("/apims/hodEmployeeList", true);
+
     const auditTypes = ['Internal Audit', 'Statutory Audit', 'NRB Inspection']
     const fiscalYears = ['2079/2080', '2080/2081', '2081/2082']
     const [branchDeptOptions, setbranchDeptOptions] = useState([]);
@@ -30,7 +32,7 @@ function Create() {
     const [postURL, setPostURL] = useState(null);
    
     const [postData, setpostData] = useState(null);
-    const { isLoading, postError, response } = useApiPost(postURL, postData);
+    const [ isLoading, response, postError ] = useApiPost(postURL, postData);
 
     const [auditTeam, setAuditTeamMembers] = useState([]);
     const [auditEntryForm] = Form.useForm();
@@ -42,17 +44,10 @@ function Create() {
     const { userInfo } = useSelector((state) => state.user);
 
 
-    
-
     useEffect(() => {
-        console.log(selectedbranchDept)
         if (branchOrDepartment === 'Branch') {
 
-            if (branchList.length === 0) {
-                return
-            }
-
-            const selectedBranch = branchList.find((branch) => branch.solDesc === selectedbranchDept);
+            const selectedBranch = branchList?.find((branch) => branch.solDesc === selectedbranchDept);
             if (selectedBranch !== undefined) {
                 console.log("selected:::" + selectedBranch)
 
@@ -64,11 +59,8 @@ function Create() {
 
         }
         else {
-            if (deptList.length === 0) {
-                return
-            }
-
-            const selectedDept = deptList.find((dept) => dept.departmentName === selectedbranchDept);
+            
+            const selectedDept = deptList?.find((dept) => dept.departmentName === selectedbranchDept);
             if (selectedDept !== undefined) {
                 console.log("selected:::" + selectedDept)
                 auditEntryForm.setFieldsValue({
@@ -79,6 +71,8 @@ function Create() {
         }
 
     }, [selectedbranchDept])
+
+
 
     const callback = (items) => {
         setAuditTeamMembers(items)
@@ -93,50 +87,49 @@ function Create() {
 
 
     useEffect(() => {
-        if (branchOrDepartment === "Branch") {
-            setUrl('/apims/bmEmployeeList');
-        }
-        else {
-            setUrl('/apims/hodEmployeeList')
-        }
         auditEntryForm.setFieldsValue({
             auditUnit: branchOrDepartment
         })
 
+        if (branchOrDepartment === 'Department') {
+            setbranchDeptOptions(deptData?.departmentList.map(a => a.departmentName))
+        }
+        else {
+            setbranchDeptOptions(data?.branchList.map(a => a.solDesc))
+        }
+
     }, [branchOrDepartment]);
 
     useEffect(() => {
-     
-        if (branchOrDepartment === "Branch") {
             if (error) {
 
-                if (error.request) {
+                if (error?.request) {
                     alert(error.code)
                 }
-                else if (error.response) {
+                else if (error?.response) {
                     alert(error.response)
                    
                 }
                 return
             }
 
-            if (data && data.branchList ) {
-                
-                    console.log("branchList:::" + data.branchList)
+            if ( data?.branchList ) {
                     setBranchList(data.branchList)
                     setbranchDeptOptions(data.branchList.map(a => a.solDesc))
-                
             }
-        } else {
-            if (data && data.departmentList ) {
-                    setDeptList(data.departmentList)
-                    console.log("deptList:::" + data.departmentList)
-                    setbranchDeptOptions(data.departmentList.map(a => a.departmentName))
-                
-            }
+        
+        
+    }, [data]);
 
-        }
-    }, [data, error, loading]);
+
+    useEffect(()=> {
+
+        if (deptData?.departmentList){
+            setDeptList(deptData.departmentList)
+        }       
+    }, [deptData])
+
+
 
 
     const handleBranchDepartment = (e) => {
@@ -174,7 +167,7 @@ function Create() {
                 alert(postError.request.status)
             }   
             else if (postError.response){
-                alert(postError.response.status + "hello")
+                alert(postError.response.status )
             }   
             setPostURL(null)
            
@@ -199,9 +192,7 @@ function Create() {
         delete postData.onsiteAuditPeriod;
         delete postData.auditPeriod;
         setpostData(postData)
-        console.log("helloooo")
         setPostURL('/auditMaster/addRecord')
-
 
     };
 
@@ -253,7 +244,7 @@ function Create() {
 
                         <Form.Item name="auditUnitDesc" label={branchOrDepartment} rules={[{ required: true, message: `Select ${branchOrDepartment}` }]}>
                             <Select onChange={(e) => setSelectedbranchDept(e)} showSearch placeholder={`Select ${branchOrDepartment}`} >
-                                {branchDeptOptions.map((item) => (
+                                {branchDeptOptions?.map((item) => (
                                     <Option key={item} value={item}>{item}</Option>
                                 ))}
                             </Select>

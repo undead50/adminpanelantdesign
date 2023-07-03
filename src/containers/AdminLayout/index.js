@@ -4,8 +4,10 @@ import logo from '../../assets/images/logo.svg'
 import {
   LogoutOutlined,
 } from '@ant-design/icons';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, Navigate } from 'react-router-dom';
 import SideBar from '../../components/Sidebar';
+import LoginPage from '../../pages/Auth/Login';
+import { useSelector } from 'react-redux';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -19,9 +21,11 @@ const AdminLayout = () => {
 
   const handleLogout = () => {
     // Handle logout logic here
-    navigate('/login')
-    
+    navigate('/auth/login')
   };
+
+  
+
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -57,7 +61,7 @@ const AdminLayout = () => {
             </Button>
      
         </Header>
-        <Content className='site-layout-background' style={{ margin: '16px' , padding:'12px', height: '100%',}}>
+        <Content className='site-layout-background' style={{ margin: '12px' , padding:'10px', height: '100%',}}>
           <div>
             <Outlet/>
           </div>

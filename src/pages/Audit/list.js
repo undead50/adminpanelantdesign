@@ -1,26 +1,40 @@
 
-import { useFetch } from '../../hooks';
+import { useApiPost } from '../../hooks';
 import { useEffect, useState } from 'react';
 
-import { Table, Skeleton  } from 'antd';
+import { Table, Skeleton, Space, Tag, Button } from 'antd';
 
+import { DeleteFilled, EditFilled } from '@ant-design/icons';
+import { useSelector } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 
 function ListAudit() {
 
-    const [url, setUrl] = useState('auditMaster/getAllRecord');
-    const { data, loading, error } = useFetch(url, true);
+    const { userInfo } = useSelector((state) => state.user)
 
+    const payload = {createdBy:userInfo.domainName}
+
+    const navigate = useNavigate();
+    const [ isLoading, response, postError ] = useApiPost('/auditMaster/getAllRecord', payload);
+
+
+    const navigateToDetailPage = props => { 
+      navigate('/addComment', {state: props })
+    }
 
     const getDateFromString = str => {
-        const [date,time] = str.split("T");
-        
+        const [date,time] = str.split("T");      
         return date;
-
-
-
       };
 
-
+      const getStatusFromCode = str => {
+        var status = ""
+        if (str === 'E') {
+          status = "ENTERED"
+         }            
+        return status;
+      };
+ 
 
     const columns = [
         {
@@ -43,7 +57,9 @@ function ListAudit() {
             title: 'Audit Status',
             dataIndex: 'auditStatus',
             key: 'auditStatus',
-            render:  (text) => <a>{text ==='E' ? 'Entered' : text}</a>,
+            render: (text) => <Tag color= {text === 'entered' ? 'geekblue' : 'green' } key={text}>
+            {getStatusFromCode(text).toUpperCase()}
+          </Tag> 
           },
           {
             title: 'Created Date',
@@ -55,59 +71,61 @@ function ListAudit() {
             title: 'Created By',
             dataIndex: 'createdBy',
             key: 'createdBy',
-          }
+          },
         
-        // {
-        //   title: 'Action',
-        //   key: 'action',
-        //   render: (_, record) => (
-        //     <Space size="middle">
-        //       <a>Invite {record.name}</a>
-        //       <a>Delete</a>
-        //     </Space>
-        //   ),
-        // },
+        {
+          title: 'Action',
+          key: 'action',
+          render: (record) =>( <Space size="middle"> <Button type="primary" icon = {<EditFilled/>}
+              onClick={()=> navigateToDetailPage(record) }></Button>   
+              <Button danger icon={<DeleteFilled />}
+              onClick={()=> console.log()}></Button> 
+              </Space>           
+              )
+        },
       ];
 
 
     const [auditRecords, setAuditRecords] = useState([])
 
 
-    useEffect(() => {
-     
-      
-            if (error) {
 
-                if (error.request) {
-                    alert(error.code)
-                  
+    useEffect(() => {
+    
+      
+            if (postError) {
+                if (postError.request) {
+                  console.log(postError)
                 }
-                else if (error.response) {
-                    alert(error.response)
-                   
+                else if (postError.response) {
+                  console.log(postError)
                 }
                 return
             }
 
-            if (data ) {
-                console.log(data)
-                 setAuditRecords( data.auditMasterListAll);
+            if (response) {
+                 setAuditRecords( response.auditMasterListAll);
             }
-        
-
-        
-    }, [data, error, loading]);
+  
+    }, [response, postError]);
 
 
+    // useEffect(() => {
+
+    //   console.log(auditRecords)
+     
+    // }, [auditRecords]);
 
 
 
 
-    const content = <div style={{ height: '100%', margin: '12px' }}>
+    const content = 
+    <div style={{ height: '100%', margin: '12px' }}>
                 <h2>Audit Lists</h2>
 
-                <Table columns={columns} dataSource={auditRecords}></Table>
+          <Table columns={columns} dataSource={auditRecords} size='large'   >
 
+      </Table>
 
     </div>
     return (content);

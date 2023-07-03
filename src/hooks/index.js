@@ -28,13 +28,15 @@ export const useNotification = () => {
 const cache = {};
 
 
-export const useApiPost = (url,  data) => {
+ const useApiPost = (url,  data) => {
   const [isLoading, setIsLoading] = useState(false);
   const [postError, setPostError] = useState(null);
   const [response, setResponse] = useState(null);
+
   const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
+
     if (!url){
       return 
     }
@@ -43,37 +45,40 @@ export const useApiPost = (url,  data) => {
      
       try {
         setIsLoading(true);
-
-        const response = await axios.post(url,  data, {
+        const resdata = await axios.post(url,  data,  {
           headers: {
             'Authorization': `Bearer ${userInfo.token}`,
             'Content-Type': 'application/json',
-          }});
-        setResponse(response);
-        setPostError(null);
+        }});
+        setResponse(resdata?.data);
+   
       } catch (error) {
         if (error.response) {
           if (error.response.status === 401) {
             alert("unauthorised")
           }
         }
-        setPostError(error);
-        setResponse(null)
+        setPostError(error);      
       } finally {
         setIsLoading(false);
       }
     };
+
    postData();
   }, [url])
 
-  return { isLoading, postError, response };
+  return [ isLoading, response, postError ];
 };
 
-const useFetch =  ( url, useCache = false) => {
+
+
+
+const useFetch =  (url, useCache = false) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { userInfo } = useSelector((state) => state.user);
+  
   useEffect(() => {
     if (!url){
       return
@@ -81,8 +86,7 @@ const useFetch =  ( url, useCache = false) => {
     const fetchData = async () => {
       if (useCache && cache[url]) {
         setData(cache[url]);
-        setLoading(false);
-        setError(null);
+     
       } else {
         try {
           const { data } = await axios.get(url, {
@@ -93,7 +97,7 @@ const useFetch =  ( url, useCache = false) => {
           });
           if (useCache) cache[url] = data;
           setData(data);
-          setError(null)
+  
         } catch (err) {
           console.log(err)
           if (err) {           
@@ -102,7 +106,7 @@ const useFetch =  ( url, useCache = false) => {
               }
           }
           setError(err);
-          setData(null)     
+       
         }finally {
           setLoading(false);
         }
@@ -112,7 +116,7 @@ const useFetch =  ( url, useCache = false) => {
   }, [url]);
 
 
-  return { data, loading, error }
+  return [data, loading, error ]
 };
 
-export { useFetch };
+export { useFetch, useApiPost };

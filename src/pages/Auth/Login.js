@@ -1,5 +1,5 @@
-import React from 'react';
-import { Form, Input, Button  } from 'antd';
+import React, { useEffect } from 'react';
+import { Form, Input, Button, Layout, Card } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Outlet, useNavigate } from 'react-router-dom';
 import './index.css';
@@ -8,49 +8,59 @@ import { setUser } from '../../store';
 import {useSelector,useDispatch} from 'react-redux'
 import { postLoginData } from '../../store/slices/authSlice';
 import {useNotification} from '../../hooks/index'
+import logo from '../../assets/images/logo.svg'
 
 const LoginPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const { data, loading, error } = useSelector((state) => state.auth);
+
+    useEffect(()=>{
+      if (data){
+
+          if (data.Code === "0"){
+            dispatch(setUser({
+              userName: data.Data.employeeName,
+              solId:data.Data.solId,
+              email:data.Data.email,
+              departmentName:data.Data.departmentName,
+              token:data.Data.token,
+              domainName:data.Data.domainUserName
+          })
+          )
+          navigate('/');
+          callNotification('Login Success','success')
+        } else {
+          callNotification('Login Denied','error')
+        }
+    }
+    }, [data])
+
 
     const {callNotification} = useNotification();
 
-    const { data, loading, error } = useSelector((state) => state.auth);
     // useNotification('Login Denied','error')
-    
-    const onFinish = (values) => {
+
+    const  onFinish = (values) => {
     // Call the postData function from the custom hook
     const reqData = {
       username:values.username,
       password:values.password
     }
     dispatch(postLoginData(reqData))
-   
-    console.log(data)
-    if (data.Code === "0"){
-        dispatch(setUser({
-          userName: data.Data.employeeName,
-          solId:data.Data.solId,
-          email:data.Data.email,
-          departmentName:data.Data.departmentName,
-          token:data.Data.token,
-          domainName:data.Data.domainUserName
-      }))
-      navigate('/');
-      callNotification('Login Success','success')
-    } else {
-      callNotification('Login Denied','error')
-    }
+
+      
   };
 
   return (
-    <div style={{ maxWidth: 300, margin: '0 auto', marginTop: 200 }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(to right, #468CC1, #3EAB94)', display: 'flex',  alignItems:'center', justifyContent:'center' }}>
+    <Card style={{ maxWidth: '25%', margin: '0 auto' }}>
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
         <img
-          src="https://www.ctznbank.com/assets/backend/uploads/logo-new.png"
+          src= {logo}
           alt="Logo"
-          style={{ height: 80 }}
+          style={{ height: 80, width: '90%' }}
         />
       </div>
       <u>
@@ -88,6 +98,7 @@ const LoginPage = () => {
         {loading && <Spinner />}
         <Outlet/>
       </Form>
+    </Card>
     </div>
   );
 };
