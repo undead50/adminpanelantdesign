@@ -22,14 +22,29 @@ const authSlice = createSlice({
         isLoggedIn: false,
         data: null,
         loading:false,
-        error: false
+        error: false,
+        userInfo:{
+          userName: '',
+          solId:'',
+          email:'',
+          departmentName:'',
+          token:''
+      }
     },
     reducers: {
-        login: (state) => {
-          state.isLoggedIn = true;
+        login: (state, action) => {
+
         },
-        logout: (state) => {
+        setUser: (state,action) => {
+          state.userInfo = action.payload
+        },
+       
+        logout: (state, action) => {
+          console.log("called logout function")
           state.isLoggedIn = false;
+          state.data = null;
+          state.userInfo = null;
+          
         }
     },
     extraReducers: {
@@ -38,7 +53,7 @@ const authSlice = createSlice({
       },
       [postLoginData.fulfilled]: (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = action.payload;        
       },
       [postLoginData.rejected]: (state, action) => {
         state.loading = false;
@@ -47,5 +62,5 @@ const authSlice = createSlice({
     }
 })
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, setUser } = authSlice.actions;
 export const authReducer = authSlice.reducer;

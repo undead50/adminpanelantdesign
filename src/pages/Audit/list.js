@@ -10,9 +10,9 @@ import { useNavigate } from 'react-router-dom';
 
 function ListAudit() {
 
-    const { userInfo } = useSelector((state) => state.user)
+    const { userInfo } = useSelector((state) => state.auth)
 
-    const payload = {createdBy:userInfo.domainName}
+    const payload = {createdBy:userInfo?.domainName}
 
     const navigate = useNavigate();
     const [ isLoading, response, postError ] = useApiPost('/auditMaster/getAllRecord', payload);

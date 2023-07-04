@@ -17,9 +17,14 @@ const LoginPage = () => {
     const { data, loading, error } = useSelector((state) => state.auth);
 
     useEffect(()=>{
+     
+      if (error){
+        callNotification('Login Error','error')
+        return
+      }
       if (data){
-
-          if (data.Code === "0"){
+      
+          if (data.Code === '0'){
             dispatch(setUser({
               userName: data.Data.employeeName,
               solId:data.Data.solId,
@@ -27,15 +32,16 @@ const LoginPage = () => {
               departmentName:data.Data.departmentName,
               token:data.Data.token,
               domainName:data.Data.domainUserName
-          })
-          )
-          navigate('/');
-          callNotification('Login Success','success')
-        } else {
-          callNotification('Login Denied','error')
-        }
-    }
-    }, [data])
+            })
+            )
+            
+            navigate('/');
+            callNotification('Login Success','success')
+          } else {
+            callNotification('Login Denied','error')
+          }
+      }
+    }, [data, error])
 
 
     const {callNotification} = useNotification();
@@ -50,11 +56,7 @@ const LoginPage = () => {
     }
     dispatch(postLoginData(reqData))
 
-    
-
-    
-
-      
+  
   };
 
   return (

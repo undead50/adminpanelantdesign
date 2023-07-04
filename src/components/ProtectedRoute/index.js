@@ -8,10 +8,12 @@ import { Outlet, useNavigate, Navigate } from 'react-router-dom';
 export default function ProtectedRoute({ children }) {
 
 
-    const { userInfo } = useSelector((state) => state.user);
+    const { userInfo } = useSelector((state) => state.auth);
 
-
-  if(userInfo?.token === ''){
+        console.log(userInfo)
+   
+  if(userInfo === null){
+    
     return  <Navigate to={'/auth/login'} replace />
 
   }

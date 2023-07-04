@@ -7,21 +7,19 @@ import { persistStore, persistReducer,FLUSH,
   PURGE,
   REGISTER, } from 'redux-persist'
 
-import { login, logout, authReducer } from './slices/authSlice';
-import { setUser,userReducer } from "./slices/userSlice";
+import { login, logout, authReducer, setUser } from './slices/authSlice';
 
 
 const ENCRYPTION_KEY = 'my-secret-key';
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['auth','user'],
+    whitelist: ['auth'],
   };
 
 
   const rootReducer = combineReducers({
-    auth: authReducer,
-    user: userReducer
+    auth: authReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -38,4 +36,4 @@ export const store = configureStore({
   });
   
 export const persistor = persistStore(store)
-export {login,logout,setUser}
+export {login,logout, setUser}

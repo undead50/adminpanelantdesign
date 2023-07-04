@@ -41,7 +41,7 @@ function Create() {
     const [deptList, setDeptList] = useState([]);
 
 
-    const { userInfo } = useSelector((state) => state.user);
+    const { userInfo } = useSelector((state) => state.auth);
 
 
     useEffect(() => {

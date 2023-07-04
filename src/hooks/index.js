@@ -5,7 +5,6 @@ import { Alert, notification } from 'antd'
 import { useEffect } from 'react';
 import { useSelector } from "react-redux";
 import { BACKEND_URL } from '../config';
-import { Outlet, useNavigate } from 'react-router-dom';
 
 
 
@@ -33,7 +32,7 @@ const cache = {};
   const [postError, setPostError] = useState(null);
   const [response, setResponse] = useState(null);
 
-  const { userInfo } = useSelector((state) => state.user);
+  const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
 
@@ -55,7 +54,8 @@ const cache = {};
       } catch (error) {
         if (error.response) {
           if (error.response.status === 401) {
-            alert("unauthorised")
+           
+            //clear redux auth state and navigate to login
           }
         }
         setPostError(error);      
@@ -77,7 +77,7 @@ const useFetch =  (url, useCache = false) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { userInfo } = useSelector((state) => state.user);
+  const { userInfo } = useSelector((state) => state.auth);
   
   useEffect(() => {
     if (!url){

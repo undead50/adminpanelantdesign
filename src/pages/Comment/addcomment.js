@@ -19,21 +19,21 @@ import { useNotification } from "../../hooks/index";
 import AddMoreTag from "../../components/AddMoreTag";
 import Item from "antd/es/list/Item";
 import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 function AddComment() {
-  const location = useLocation()
+  const location = useLocation();
 
-useEffect(()=>{
-  console.log(location.state)
-}, [])
-
+  useEffect(() => {
+    console.log(location.state);
+  }, []);
 
   //console.log(location.state)
   //  console.log("hello")
-
+  const { userInfo } = useSelector((state) => state.auth);
 
   const [commentEntryForm] = Form.useForm();
   const [data, loading, error] = useFetch(
@@ -58,7 +58,7 @@ useEffect(()=>{
   const [subhead2, setSubHead2] = useState(null);
   const [subhead3, setSubHead3] = useState(null);
   const [standardComment, setStandardComment] = useState(null);
-  const [riskRating, setRiskRating] = useState(null);
+  const [riskGrade, setRiskRating] = useState(null);
 
   const [subhead1List, setSubhead1List] = useState([]);
   const [subhead2List, setSubhead2List] = useState([]);
@@ -73,6 +73,7 @@ useEffect(()=>{
     console.log(`checked = ${e.target.checked}`);
     setSpecialAttention(e.target.checked);
   };
+
 
   useEffect(() => {
     if (error) {
@@ -108,7 +109,7 @@ useEffect(()=>{
         subHead2: null,
         subHead3: null,
         standardComment: null,
-        riskRating: null,
+        riskGrade: null,
       });
 
       setHead(null);
@@ -141,7 +142,7 @@ useEffect(()=>{
         subHead2: null,
         subHead3: null,
         standardComment: null,
-        riskRating: null,
+        riskGrade: null,
       });
 
       setSubHead1(null);
@@ -172,7 +173,7 @@ useEffect(()=>{
         subHead2: null,
         subHead3: null,
         standardComment: null,
-        riskRating: null,
+        riskGrade: null,
       });
 
       setSubHead2(null);
@@ -204,7 +205,7 @@ useEffect(()=>{
       commentEntryForm.setFieldsValue({
         subHead3: null,
         standardComment: null,
-        riskRating: null,
+        riskGrade: null,
       });
 
       setSubHead3(null);
@@ -254,7 +255,7 @@ useEffect(()=>{
     if (data) {
       commentEntryForm.setFieldsValue({
         standardComment: null,
-        riskRating: null,
+        riskGrade: null,
       });
 
       setStandardComment(null);
@@ -294,22 +295,40 @@ useEffect(()=>{
       );
       if (comment) {
         commentEntryForm.setFieldsValue({
-          riskRating: comment.riskRating,
+          riskGrade: comment.riskGrade,
         });
-        setRiskRating(comment.riskRating);
+        setRiskRating(comment.riskGrade);
       }
     }
   }, [standardComment]);
 
   const onFinish = (values) => {
-    console.log("Form values:", values);
     // alert(values.onsiteAuditPeriod)
+
+    var comment = values;
+    comment['commentSpecialMark'] = comment['commentSpecialMark'].map(specialMarking => ({ specialMarking }));
+    comment['createdBy'] = userInfo.domainName
+    comment['createdByName'] = userInfo.userName
+    comment['commentSpecialAttn'] = []
+    
+    console.log(comment);
+
+    comment['specialAttentionDeptHead'].forEach(element => {
+      
+      
+    });
+
+
+    console.log(comment);
+
+
+
+
   };
 
   const content = (
     <div style={{ height: "100%", margin: "12px" }}>
       <Form form={commentEntryForm} onFinish={onFinish} layout="vertical">
-        <h2>Add comment</h2>
         <Row gutter={20}>
           <Col span={6}>
             <Form.Item
@@ -422,7 +441,7 @@ useEffect(()=>{
 
           <Col span={6}>
             <Form.Item
-              name="riskRating"
+              name="riskGrade"
               label="Risk Grade"
               rules={[{ required: true }]}
             >
@@ -525,7 +544,7 @@ useEffect(()=>{
         <Row>
           <Col span={24}>
             <Form.Item
-              name="commentDetail"
+              name="commentInDetail"
               label="Comment Details"
               rules={[{ required: true }]}
             >
