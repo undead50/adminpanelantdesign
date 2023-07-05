@@ -45,3 +45,8 @@
 .ant-form-item-explain label {
   margin-bottom: 20px !important;
 }
+
+.ant-col.ant-form-item-label {
+  padding-bottom: 3px !important; 
+}
+

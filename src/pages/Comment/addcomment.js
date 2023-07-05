@@ -24,15 +24,21 @@ import { useSelector } from "react-redux";
 const { Option } = Select;
 const { TextArea } = Input;
 
-function AddComment() {
-  const location = useLocation();
 
-  useEffect(() => {
-    console.log(location.state);
-  }, []);
-
+function AddComment(props, {addCommentCallback}) {
   //console.log(location.state)
   //  console.log("hello")
+
+
+useEffect(()=>{
+    if (props?.okButtonClicked >= 1){
+      commentEntryForm.submit()
+   }
+   if (props?.okButtonClicked === 0){
+      commentEntryForm.resetFields()
+     }
+},[props?.okButtonClicked])
+
   const { userInfo } = useSelector((state) => state.auth);
 
   const [commentEntryForm] = Form.useForm();
@@ -73,7 +79,6 @@ function AddComment() {
     console.log(`checked = ${e.target.checked}`);
     setSpecialAttention(e.target.checked);
   };
-
 
   useEffect(() => {
     if (error) {
@@ -303,27 +308,41 @@ function AddComment() {
   }, [standardComment]);
 
   const onFinish = (values) => {
-    // alert(values.onsiteAuditPeriod)
+
 
     var comment = values;
-    comment['commentSpecialMark'] = comment['commentSpecialMark'].map(specialMarking => ({ specialMarking }));
-    comment['createdBy'] = userInfo.domainName
-    comment['createdByName'] = userInfo.userName
-    comment['commentSpecialAttn'] = []
-    
-    console.log(comment);
+    comment["commentSpecialMark"] = comment["commentSpecialMark"].map(
+      (specialMarking) => ({ specialMarking })
+    );
+    comment["createdBy"] = userInfo.domainName;
+    comment["createdByName"] = userInfo.userName;
+    comment["commentSpecialAttn"] = [];
+    comment["auditId"] = props?.auditId;
+  
 
-    comment['specialAttentionDeptHead'].forEach(element => {
-      
-      
-    });
+    if (comment["specialAttentionDeptHead"]) {
+      comment["commentSpecialAttn"] = comment["specialAttentionDeptHead"].map(
+        (item) => {
+          const { employeeName, email } = deptList.find(
+            (dept) => dept.employeeId === item
+          );
+          return { name: employeeName, email: email, attnType: "HOD" };
+        }
+      );
+    }
 
+    if (comment["specialAttentionExecs"]) {
+      comment["commentSpecialAttn"] = comment["commentSpecialAttn"].concat(
+        comment["specialAttentionExecs"].map((item) => {
+          const { employeeName, email } = executivesList.find(
+            (ec) => ec.employeeId === item
+          );
+          return { name: employeeName, email: email, attnType: "EC" };
+        })
+      );
+    }
 
-    console.log(comment);
-
-
-
-
+    props?.addCommentCallback(comment)
   };
 
   const content = (
@@ -504,7 +523,7 @@ function AddComment() {
               <Form.Item
                 name="specialAttentionExecs"
                 label="Executive Team"
-                rules={[{ required: specialAttention }]}
+                rules={[{ required: false }]}
               >
                 <Select mode="multiple" placeholder="Select Special Attention">
                   {executivesList?.map((item) => (
@@ -524,7 +543,7 @@ function AddComment() {
               <Form.Item
                 name="specialAttentionDeptHead"
                 label="Department Head"
-                rules={[{ required: specialAttention }]}
+                rules={[{ required: false }]}
               >
                 <Select
                   mode="multiple"
@@ -557,11 +576,7 @@ function AddComment() {
           </Col>
         </Row>
 
-        <Form.Item style={{ marginTop: "20px" }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
+      
       </Form>
     </div>
   );
