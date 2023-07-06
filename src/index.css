@@ -47,6 +47,38 @@
 }
 
 .ant-col.ant-form-item-label {
-  padding-bottom: 3px !important; 
+  padding-bottom: 4px !important; 
+  padding-left: 2px !important;
 }
 
+.ant-input-status-error.ant-input-disabled,
+.ant-input-status-error.ant-input-disabled:hover {
+  border-color: #ff4d4f;
+  background-color: red;
+}
+.ant-input-disabled, .ant-input-number-disabled, .ant-picker-disabled{
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  border-color: #f3eeee !important;
+  color: #3d3d3fd8 !important;
+}
+
+.ant-picker-input input {
+  color: #3d3d3fd8 !important;
+}
+
+.ant-radio-group  span{
+  color: #3d3d3fd8 !important;
+}
+
+.ant-radio-group .ant-radio-disabled span{
+
+  border-color: rgba(128, 128, 128, 0.5)  !important;
+}
+
+.ant-radio-wrapper .ant-radio-checked .ant-radio-inner::after{
+
+  background-color: rgba(128, 128, 128, 0.)  !important;
+
+}
+
+.ant-table table { font-size: 13px; }

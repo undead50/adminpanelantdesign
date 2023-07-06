@@ -31,11 +31,14 @@ function AddComment(props, {addCommentCallback}) {
 
 
 useEffect(()=>{
+  
     if (props?.okButtonClicked >= 1){
       commentEntryForm.submit()
    }
-   if (props?.okButtonClicked === 0){
+   if (props?.okButtonClicked === 0){    
       commentEntryForm.resetFields()
+      setSpecialAttention(false)
+
      }
 },[props?.okButtonClicked])
 
@@ -76,7 +79,6 @@ useEffect(()=>{
   const [deptList, setDeptList] = useState([]);
 
   const onSpecialAttentionChange = (e) => {
-    console.log(`checked = ${e.target.checked}`);
     setSpecialAttention(e.target.checked);
   };
 
@@ -309,7 +311,6 @@ useEffect(()=>{
 
   const onFinish = (values) => {
 
-
     var comment = values;
     comment["commentSpecialMark"] = comment["commentSpecialMark"].map(
       (specialMarking) => ({ specialMarking })
@@ -318,8 +319,7 @@ useEffect(()=>{
     comment["createdByName"] = userInfo.userName;
     comment["commentSpecialAttn"] = [];
     comment["auditId"] = props?.auditId;
-  
-
+    comment['id'] = props?.tempId + 1
     if (comment["specialAttentionDeptHead"]) {
       comment["commentSpecialAttn"] = comment["specialAttentionDeptHead"].map(
         (item) => {
@@ -512,7 +512,7 @@ useEffect(()=>{
         </Row>
 
         <Row style={{ marginBottom: "12px" }}>
-          <Checkbox onChange={onSpecialAttentionChange}>
+          <Checkbox checked = {specialAttention} onChange={onSpecialAttentionChange}>
             Comment requires special attention.
           </Checkbox>
         </Row>
@@ -547,8 +547,7 @@ useEffect(()=>{
               >
                 <Select
                   mode="multiple"
-                  placeholder="Select concerned department if/any"
-                >
+                  placeholder="Select concerned department if/any">
                   {deptList?.map((item) => (
                     <Option key={item.employeeName} value={item.employeeId}>
                       {`${item.employeeName} (${item.departmentName})`}

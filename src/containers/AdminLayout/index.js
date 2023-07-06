@@ -30,7 +30,14 @@ const AdminLayout = () => {
         collapsible
         collapsed={collapsed}
         onCollapse={handleCollapse}
-        style={{ background: "white" }}
+        style={{
+          overflow: "auto",
+          height: "100vh",
+          position: "sticky",
+          backgroundColor:'white',
+          top: 0,
+          left: 0
+        }}
       >
         <div className="logo">
           <img

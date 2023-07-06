@@ -123,7 +123,7 @@ function ListAudit() {
     <div style={{ height: '100%', margin: '12px' }}>
                 <h2>Audit Lists</h2>
 
-          <Table columns={columns} dataSource={auditRecords} size='large'   >
+          <Table columns={columns} dataSource={auditRecords} size='small'   >
 
       </Table>
 
