@@ -44,6 +44,17 @@ function AuditDetails() {
   const [postData, setpostData] = useState(null);
   const [ isLoading, response, postError ] = useApiPost(postURL, postData);
 
+
+  useEffect(()=>{
+    if (postError){
+      setPostURL(null)
+    }
+
+    console.log(response)
+    
+
+  }, [response, postError])
+
   const columns = [
     {
       title: "Audit Unit",
@@ -132,7 +143,8 @@ function AuditDetails() {
       content: '',
       okText:'Submit',
       onOk() {
-
+          setpostData(comments);
+          setPostURL('/auditComment/addComment')
       },
       onCancel() {},
     });
@@ -429,6 +441,7 @@ function AuditDetails() {
       <Modal
         title={<h2 style={{ margin: "0px 0 16px 12px" }}>Add Comment</h2>}
         centered
+        destroyOnClose
         okText="Add"
         width={"80%"}
         onCancel={() => 

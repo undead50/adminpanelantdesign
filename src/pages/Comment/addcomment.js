@@ -20,6 +20,9 @@ import AddMoreTag from "../../components/AddMoreTag";
 import Item from "antd/es/list/Item";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -28,6 +31,14 @@ const { TextArea } = Input;
 function AddComment(props, {addCommentCallback}) {
   //console.log(location.state)
   //  console.log("hello")
+
+  useEffect(()=>{
+  
+    if (props?.okButtonClicked){
+      commentEntryForm.submit()
+   }
+   
+},[props?.okButtonClicked])
 
 
 useEffect(()=>{
@@ -564,13 +575,18 @@ useEffect(()=>{
             <Form.Item
               name="commentInDetail"
               label="Comment Details"
+              valuePropName="data"
+              getValueFromEvent={(event, editor) => {
+                const data = editor.getData();
+                return data;
+              }}
               rules={[{ required: true }]}
             >
-              <TextArea
-                style={{ width: "100%" }}
-                placeholder="Please enter..."
-                rows={5}
-              />
+               <CKEditor  editor={ClassicEditor}
+              config={{         
+                toolbar: [  'undo', 'redo' , '|', 'heading', '|', 'bold', 'italic', 'blockQuote', 'link', 'numberedList', 'bulletedList',  'insertTable' ]
+              }} 
+              ></CKEditor>
             </Form.Item>
           </Col>
         </Row>

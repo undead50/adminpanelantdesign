@@ -82,3 +82,7 @@
 }
 
 .ant-table table { font-size: 13px; }
+
+.ck-editor__editable {
+  min-height: 100px;
+}
